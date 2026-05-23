@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://unpkg.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src https://fonts.gstatic.com;
+      frame-src https://*.quicksight.aws.amazon.com https://*.s3.amazonaws.com https://*.s3.us-east-1.amazonaws.com;
+      connect-src 'self' blob:
+        https://d101591d1kwpyj.cloudfront.net
+        https://*.quicksight.aws.amazon.com
+        https://*.quicksight.aws.a2z.com
+        wss://us-east-1.quicksight.aws.amazon.com
+        https://unpkg.com
+        https://*.resources.maps.a2z.com
+        https://maps.geo.us-east-1.amazonaws.com
+        https://sourcemaps.prod.us-east-1.quicksight.aws.a2z.com
+        https://d233vg7hq6pih1.cloudfront.net
+        https://d2an3pauscn6pz.cloudfront.net
+        https://d3bzuuerb3m5u0.cloudfront.net
+        https://d2jqqf54ibg5b0.cloudfront.net
+        https://dz7h3hsxqwt4t.cloudfront.net
+        https://d32lr7enz4vwys.cloudfront.net
+        https://d758cqe2bs24d.cloudfront.net
+        https://*.execute-api.us-east-1.amazonaws.com
+        https://*.s3.amazonaws.com
+        https://*.s3.us-east-1.amazonaws.com
+        https://*.kinesisvideo.us-east-1.amazonaws.com
+        https://signin.aws.amazon.com
+        https://graph.microsoft.com
+        https://logo.clearbit.com;
+      img-src 'self' data: blob: https://*.quicksight.aws.amazon.com https://logo.clearbit.com;
+      worker-src blob:;
+    ">
+    <title>Ingram Micro Hong Kong — Partner Solutions</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/amazon-quicksight-embedding-sdk@2.11.2/dist/quicksight-embedding-js-sdk.min.js"></script>
+
+    <style>
+        /* ===== RESET ===== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ===== TOKENS ===== */
+        :root {
+            --bg-deep:      #f4f7fb;
+            --bg-mid:       #edf1f7;
+            --bg-surface:   #ffffff;
+            --bg-card:      #f0f4f9;
+            --brand:        #0066cc;
+            --brand-bright: #2196f3;
+            --accent:       #0066cc;
+            --text-primary: #0d1f35;
+            --text-secondary: #3d5a7a;
+            --text-muted:   #7a96b0;
+            --border:       rgba(0, 102, 204, 0.12);
+            --border-mid:   rgba(0, 102, 204, 0.22);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Figtree', -apple-system, sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* subtle top glow */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse 100% 30% at 50% 0%, rgba(0,102,204,.07) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after { display: none; }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #0066cc;
+            border-bottom: none;
+            box-shadow: 0 2px 12px rgba(0,102,204,.25);
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2.5rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 34px;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+
+        .logo-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255,255,255,.35);
+        }
+
+        .logo-region {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.8);
+        }
+
+        .header-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.9rem;
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.04em;
+        }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 8px rgba(255,255,255,.6);
+            animation: blink 2.4s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.35; }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 5rem 2.5rem 3.5rem;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.55s 0.05s ease forwards;
+        }
+
+        .eyebrow-line {
+            display: block;
+            width: 22px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .hero-h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.4rem, 5vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.4rem;
+            opacity: 0;
+            animation: fadeUp 0.55s 0.15s ease forwards;
+        }
+
+        .grad {
+            background: linear-gradient(130deg, #001f5c 0%, #0066cc 60%, #2196f3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 540px;
+            line-height: 1.7;
+            opacity: 0;
+            animation: fadeUp 0.55s 0.25s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SHARED SECTION WRAPPER ===== */
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 2.5rem 4.5rem;
+        }
+
+        .sec-head {
+            margin-bottom: 1.75rem;
+        }
+
+        .sec-label {
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .sec-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+        }
+
+        /* ===== CAROUSEL ===== */
+        .car-shell {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            box-shadow:
+                0 4px 24px rgba(0,0,0,.08),
+                0 1px 4px rgba(0,0,0,.05);
+            opacity: 0;
+            animation: fadeUp 0.6s 0.35s ease forwards;
+        }
+
+        .car-track {
+            display: flex;
+            transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide {
+            flex: 0 0 100%;
+            min-width: 0;
+            display: grid;
+            grid-template-columns: 58% 42%;
+            min-height: 420px;
+        }
+
+        /* image side */
+        .slide-img-wrap {
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-card);
+            display: block;
+            text-decoration: none;
+        }
+
+        .slide-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+            display: block;
+        }
+
+        .slide-img-wrap:hover .slide-img {
+            transform: scale(1.045);
+        }
+
+        /* right-edge fade into the info panel */
+        .slide-img-wrap::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, var(--bg-surface));
+            pointer-events: none;
+        }
+
+        /* info side */
+        .slide-info {
+            padding: 3rem 2.75rem 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0;
+        }
+
+        .slide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.28rem 0.7rem;
+            border-radius: 2rem;
+            margin-bottom: 1.25rem;
+            width: fit-content;
+            border: 1px solid;
+        }
+
+        .slide-product {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.015em;
+            margin-bottom: 0.8rem;
+        }
+
+        .slide-desc {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-bottom: 2rem;
+        }
+
+        .slide-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.4rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            width: fit-content;
+            border: 1px solid;
+            letter-spacing: 0.02em;
+        }
+
+        .slide-cta:hover { filter: brightness(1.15); }
+        .slide-cta:hover .cta-arrow { transform: translateX(3px); }
+
+        .cta-arrow {
+            transition: transform 0.2s ease;
+        }
+
+        /* progress strip */
+        .car-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(0,102,204,.1);
+        }
+
+        .car-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--brand), var(--accent));
+        }
+
+        /* nav row */
+        .car-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            opacity: 0;
+            animation: fadeUp 0.45s 0.5s ease forwards;
+        }
+
+        .car-dots {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .car-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .car-dot.on {
+            width: 22px;
+            background: var(--brand-bright);
+        }
+
+        .car-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-mid);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .car-btn:hover {
+            background: var(--brand);
+            border-color: var(--brand);
+            color: #ffffff;
+        }
+
+        /* ===== AI CHAT ===== */
+        .chat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow:
+                0 4px 24px rgba(0,0,0,.08),
+                0 1px 4px rgba(0,0,0,.05);
+            opacity: 0;
+            animation: fadeUp 0.6s 0.2s ease forwards;
+        }
+
+        .chat-topbar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 2rem;
+            background: #0066cc;
+            border-bottom: none;
+        }
+
+        .chat-icon-wrap {
+            flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            background: rgba(255,255,255,.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-icon-wrap svg {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+        }
+
+        .chat-meta { flex: 1; }
+
+        .chat-meta-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .chat-meta-sub {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,.7);
+            margin-top: 0.1rem;
+        }
+
+        .chat-online {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .online-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.9);
+            box-shadow: 0 0 8px rgba(255,255,255,.5);
+            animation: blink 2.4s ease-in-out infinite;
+        }
+
+        #experience-container {
+            width: 100%;
+            min-height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .state-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .spinner {
+            width: 34px;
+            height: 34px;
+            border: 3px solid rgba(0,102,204,.2);
+            border-top-color: var(--brand-bright);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .state-error {
+            padding: 1.5rem 2rem;
+            background: #fff5f5;
+            border: 1px solid rgba(239,68,68,.25);
+            border-radius: 8px;
+            color: #c53030;
+            font-size: 0.875rem;
+            max-width: 480px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            background: var(--bg-mid);
+            padding: 1.75rem 2.5rem;
+        }
+
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .footer-copy {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.1rem;
+        }
+
+        .footer-link {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover { color: var(--accent); }
+
+        .footer-sep {
+            color: var(--text-muted);
+            opacity: 0.3;
+            font-size: 0.76rem;
+            user-select: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .slide {
+                grid-template-columns: 55% 45%;
+                min-height: 360px;
+            }
+            .slide-info { padding: 2rem 1.75rem 2rem 1.5rem; }
+            .slide-product { font-size: 1.2rem; }
+        }
+
+        @media (max-width: 640px) {
+            .header-inner, .hero, .wrap, .footer { padding-left: 1.25rem; padding-right: 1.25rem; }
+            .hero { padding-top: 3rem; padding-bottom: 2.5rem; }
+            .hero-h1 { font-size: 2rem; }
+
+            .slide {
+                grid-template-columns: 1fr;
+                grid-template-rows: 220px auto;
+            }
+
+            .slide-img-wrap::after { display: none; }
+            .slide-info { padding: 1.75rem 1.5rem; }
+
+            .chat-topbar { padding: 1rem 1.25rem; }
+            .chat-online { display: none; }
+
+            .footer-inner { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+    <div class="header-inner">
+        <div class="logo-group">
+            <img src="shared/im-logo.png" alt="Ingram Micro" class="logo" onerror="this.style.display='none'">
+            <div class="logo-divider"></div>
+            <span class="logo-region">Hong Kong</span>
+        </div>
+        <div class="header-pill">
+            <span class="pill-dot"></span>
+            Solutions Hub
+        </div>
+    </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="eyebrow">
+        <span class="eyebrow-line"></span>
+        Partner Technology Solutions
+    </div>
+    <h1 class="hero-h1">
+        <span class="grad">Next-Generation</span><br>
+        Vendor Solutions
+    </h1>
+    <p class="hero-sub">
+        Explore industry-leading technology from our trusted vendor partners — cloud, AI, productivity, and infrastructure tailored for your business.
+    </p>
+</section>
+
+<!-- ===== CAROUSEL ===== -->
+<div class="wrap" style="padding-bottom: 0;">
+    <div class="sec-head">
+        <div class="sec-label">Featured Products</div>
+        <h2 class="sec-title">Vendor Solutions</h2>
+    </div>
+
+    <div class="car-shell">
+        <div class="car-track" id="carTrack"><!-- slides rendered by JS --></div>
+        <div class="car-progress">
+            <div class="car-progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <div class="car-nav">
+        <button class="car-btn" id="btnPrev" aria-label="Previous slide">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+        </button>
+        <div class="car-dots" id="carDots"><!-- dots rendered by JS --></div>
+        <button class="car-btn" id="btnNext" aria-label="Next slide">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<!-- ===== AI CHAT ===== -->
+<div class="wrap" style="padding-top: 3rem; padding-bottom: 5rem;">
+    <div class="sec-head">
+        <div class="sec-label">Powered by Amazon QuickSight</div>
+        <h2 class="sec-title">AI Assistant</h2>
+    </div>
+
+    <div class="chat-card">
+        <div class="chat-topbar">
+            <div class="chat-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <div class="chat-meta">
+                <div class="chat-meta-title">Solutions Assistant</div>
+                <div class="chat-meta-sub">Ask anything about our vendor product portfolio</div>
+            </div>
+            <div class="chat-online">
+                <span class="online-dot"></span>
+                Online
+            </div>
+        </div>
+        <div id="experience-container"></div>
+    </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="footer-inner">
+        <span class="footer-copy">&copy; 2026 Ingram Micro Inc. All rights reserved.</span>
+        <nav class="footer-links" aria-label="Legal">
+            <a class="footer-link" href="https://www.ingrammicro.com/en-us/legal/sales-terms-conditions" target="_blank" rel="noopener noreferrer">Sales T&amp;C</a>
+            <span class="footer-sep" aria-hidden="true">·</span>
+            <a class="footer-link" href="https://www.ingrammicro.com/en-us/legal/terms-of-use/" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+            <span class="footer-sep" aria-hidden="true">·</span>
+            <a class="footer-link" href="https://www.ingrammicro.com/en-us/legal/privacy-statement" target="_blank" rel="noopener noreferrer">Privacy Statement</a>
+            <span class="footer-sep" aria-hidden="true">·</span>
+            <a class="footer-link" href="https://hk.ingrammicro-asia.com/cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
+        </nav>
+    </div>
+</footer>
+
+<script>
+/* =====================================================================
+   CAROUSEL
+   ===================================================================== */
+const SLIDES = [
+    {
+        image: 'carousel/msft-copilot.png',
+        vendor: 'Microsoft',
+        product: 'Copilot for Microsoft 365',
+        desc: 'AI-powered productivity built into the apps your team already uses every day — Word, Excel, Teams, and more.',
+        // TODO: Replace with IMHK-specific product page URL if available
+        href: 'https://www.microsoft.com/en-hk/microsoft-365/business/copilot-for-microsoft-365',
+        accent:       '#0078d4',
+        badgeBg:      'rgba(0,120,212,.14)',
+        badgeBorder:  'rgba(0,120,212,.38)',
+        badgeColor:   '#60b8ff',
+        ctaBg:        'rgba(0,120,212,.12)',
+        ctaBorder:    'rgba(0,120,212,.35)',
+        ctaColor:     '#60b8ff',
+    },
+    {
+        image: 'carousel/aws-quick.png',
+        vendor: 'Amazon Web Services',
+        product: 'AWS Quick Suite',
+        desc: 'Accelerate cloud deployment with pre-validated AWS solution packages purpose-built for enterprise scale.',
+        // TODO: Replace with specific AWS Quick Suite landing URL
+        href: 'https://aws.amazon.com/',
+        accent:       '#ff9900',
+        badgeBg:      'rgba(255,153,0,.10)',
+        badgeBorder:  'rgba(255,153,0,.32)',
+        badgeColor:   '#ffb833',
+        ctaBg:        'rgba(255,153,0,.09)',
+        ctaBorder:    'rgba(255,153,0,.3)',
+        ctaColor:     '#ffb833',
+    },
+    {
+        image: 'carousel/goog-gcp.webp',
+        vendor: 'Google',
+        product: 'Google Cloud Platform',
+        desc: "Build smarter with Google's global infrastructure, advanced data analytics, and AI capabilities at scale.",
+        // TODO: Replace with IMHK-specific GCP product page URL if available
+        href: 'https://cloud.google.com/',
+        accent:       '#4285f4',
+        badgeBg:      'rgba(66,133,244,.12)',
+        badgeBorder:  'rgba(66,133,244,.32)',
+        badgeColor:   '#82b4ff',
+        ctaBg:        'rgba(66,133,244,.10)',
+        ctaBorder:    'rgba(66,133,244,.3)',
+        ctaColor:     '#82b4ff',
+    },
+];
+
+const INTERVAL_MS = 6000;
+
+let current  = 0;
+let autoTimer = null;
+
+const track    = document.getElementById('carTrack');
+const dotsWrap = document.getElementById('carDots');
+const fill     = document.getElementById('progressFill');
+
+/* Build slides + dots */
+function render() {
+    track.innerHTML = SLIDES.map((s, i) => `
+        <div class="slide" data-i="${i}">
+            <a class="slide-img-wrap" href="${s.href}" target="_blank" rel="noopener noreferrer"
+               aria-label="Learn more about ${s.product}">
+                <img class="slide-img" src="${s.image}" alt="${s.product}" loading="${i === 0 ? 'eager' : 'lazy'}">
+            </a>
+            <div class="slide-info">
+                <span class="slide-badge"
+                      style="background:${s.badgeBg};border-color:${s.badgeBorder};color:${s.badgeColor}">
+                    ${s.vendor}
+                </span>
+                <h3 class="slide-product">${s.product}</h3>
+                <p class="slide-desc">${s.desc}</p>
+                <a class="slide-cta" href="${s.href}" target="_blank" rel="noopener noreferrer"
+                   style="background:${s.ctaBg};border-color:${s.ctaBorder};color:${s.ctaColor}">
+                    Learn More
+                    <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" width="13" height="13">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    `).join('');
+
+    dotsWrap.innerHTML = SLIDES.map((s, i) => `
+        <button class="car-dot${i === 0 ? ' on' : ''}"
+                data-i="${i}"
+                aria-label="Go to slide ${i + 1}: ${s.product}">
+        </button>
+    `).join('');
+
+    dotsWrap.querySelectorAll('.car-dot').forEach(d =>
+        d.addEventListener('click', () => goTo(+d.dataset.i))
+    );
+}
+
+function goTo(idx) {
+    const dots = dotsWrap.querySelectorAll('.car-dot');
+    dots[current].classList.remove('on');
+    current = ((idx % SLIDES.length) + SLIDES.length) % SLIDES.length;
+    dots[current].classList.add('on');
+    track.style.transform = `translateX(-${current * 100}%)`;
+    startProgress();
+}
+
+function startProgress() {
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    clearTimeout(autoTimer);
+
+    /* next tick so transition: none takes effect */
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        fill.style.transition = `width ${INTERVAL_MS}ms linear`;
+        fill.style.width = '100%';
+    }));
+
+    autoTimer = setTimeout(() => goTo(current + 1), INTERVAL_MS);
+}
+
+/* Pause on hover */
+const shell = document.querySelector('.car-shell');
+shell.addEventListener('mouseenter', () => {
+    clearTimeout(autoTimer);
+    fill.style.transition = 'none';
+    fill.style.width = fill.getBoundingClientRect().width / shell.getBoundingClientRect().width * 100 + '%';
+});
+shell.addEventListener('mouseleave', startProgress);
+
+/* Touch swipe */
+let tx = 0;
+shell.addEventListener('touchstart', e => { tx = e.changedTouches[0].clientX; }, { passive: true });
+shell.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+document.getElementById('btnPrev').addEventListener('click', () => goTo(current - 1));
+document.getElementById('btnNext').addEventListener('click', () => goTo(current + 1));
+
+render();
+startProgress();
+
+/* =====================================================================
+   QUICKSIGHT EMBED
+   ===================================================================== */
+(async () => {
+    const container = document.getElementById('experience-container');
+    container.innerHTML = '<div class="state-loading"><div class="spinner"></div><span>Loading AI Assistant&hellip;</span></div>';
+
+    try {
+        const partnerId = 'product-landing-page';
+
+        const res = await fetch(`https://d101591d1kwpyj.cloudfront.net/api/get-embed-config?partnerId=${encodeURIComponent(partnerId)}`);
+        if (!res.ok) {
+            const msg = await res.text();
+            container.innerHTML = `<div class="state-error">Failed to load assistant configuration.<br>${msg}</div>`;
+            return;
+        }
+
+        const { embedUrl, contentOptions } = await res.json();
+        container.innerHTML = '';
+
+        const { createEmbeddingContext } = QuickSightEmbedding;
+        const ctx = await createEmbeddingContext({
+            onChange: (e, meta) => console.log('[QS] context change', e, meta),
+        });
+
+        const frameOptions = {
+            url: embedUrl,
+            container: '#experience-container',
+            height: '550px',
+            width: '100%',
+            onChange: changeEvent => {
+                if (changeEvent.eventName === 'FRAME_LOADED') {
+                    document.querySelector('.chat-online').textContent = '';
+                    document.querySelector('.chat-online').insertAdjacentHTML('afterbegin',
+                        '<span class="online-dot"></span> Ready');
+                }
+            },
+        };
+
+        contentOptions.onMessage = async msgEvent => {
+            if (msgEvent.eventName === 'ERROR_OCCURRED') {
+                container.innerHTML = `<div class="state-error">Assistant error: ${msgEvent.message.errorCode}</div>`;
+            }
+        };
+
+        await ctx.embedQuickChat(frameOptions, contentOptions);
+
+    } catch (err) {
+        console.error('[QS] embed error:', err);
+        container.innerHTML = `<div class="state-error">Unable to load the AI assistant.<br>${err.message}</div>`;
+    }
+})();
+</script>
+</body>
+</html>

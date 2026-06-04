@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic FinOps for Multi-Cloud | AI+ Power 2026</title>
+  <!-- To export PDF: Chrome → Cmd+P → Save as PDF → Landscape → Margins: None → Background graphics ON -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #002A6B;
+      --navy-deep:  #001845;
+      --blue:       #0066CC;
+      --blue-mid:   #1A7FD4;
+      --blue-light: #5BAEF0;
+      --blue-pale:  #D6EAFB;
+      --white:      #FFFFFF;
+      --off-white:  #F3F7FC;
+      --black:      #0A0A0F;
+      --gray-dark:  #3A4557;
+      --gray-mid:   #6B7C93;
+      --gray-light: #C8D5E4;
+      --accent:     #E8A000;
+      --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-body:    'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --slide-w: 100vw;
+      --slide-h: 100vh;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--black);
+      font-family: var(--font-body);
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Deck ─────────────────────────────────────────────────────────── */
+    #deck {
+      width: calc(7 * var(--slide-w));
+      height: var(--slide-h);
+      display: flex;
+      transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .slide {
+      width: var(--slide-w);
+      height: var(--slide-h);
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── Navigation ───────────────────────────────────────────────────── */
+    #nav {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: 14px;
+      z-index: 1000;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 40px; padding: 10px 20px;
+    }
+    .nav-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      background: transparent; color: var(--white);
+      font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s; line-height: 1;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.6); }
+    .nav-btn:disabled { opacity: 0.3; cursor: default; }
+    #dots { display: flex; gap: 8px; align-items: center; }
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      cursor: pointer; transition: background 0.25s, transform 0.25s;
+    }
+    .dot.active { background: var(--white); transform: scale(1.4); }
+
+    #slide-counter {
+      position: fixed; top: 24px; right: 32px;
+      font-family: var(--font-display); font-size: 13px;
+      font-weight: 400; letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.5); z-index: 1000;
+    }
+
+
+    /* ── Shared components ────────────────────────────────────────────── */
+    .topbar {
+      position: absolute; top: 0; left: 0; right: 0; height: 7px;
+      background: linear-gradient(90deg, var(--navy) 0%, var(--blue) 60%, var(--blue-light) 100%);
+    }
+
+    .dark-eyebrow {
+      font-family: var(--font-display); font-weight: 700; font-size: 11px;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .dark-eyebrow::before { content: ''; display: block; width: 24px; height: 2px; background: var(--blue-light); }
+
+    .light-eyebrow {
+      font-family: var(--font-display); font-weight: 700; font-size: 11px;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .light-eyebrow::before { content: ''; display: block; width: 24px; height: 2px; background: var(--blue); }
+
+    .dark-heading {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(24px, 3vw, 40px);
+      line-height: 1.08; text-transform: uppercase;
+      color: var(--white); letter-spacing: -0.02em;
+    }
+    .light-heading {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(24px, 3vw, 40px);
+      line-height: 1.08; text-transform: uppercase;
+      color: var(--navy); letter-spacing: -0.02em;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in > * { animation: fadeUp 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+    .animate-in > *:nth-child(1) { animation-delay: 0.05s; }
+    .animate-in > *:nth-child(2) { animation-delay: 0.13s; }
+    .animate-in > *:nth-child(3) { animation-delay: 0.21s; }
+    .animate-in > *:nth-child(4) { animation-delay: 0.29s; }
+    .animate-in > *:nth-child(5) { animation-delay: 0.37s; }
+    .animate-in > *:nth-child(6) { animation-delay: 0.45s; }
+
+    #key-hint {
+      position: fixed; bottom: 80px; right: 32px;
+      font-family: var(--font-display); font-size: 11px;
+      letter-spacing: 0.12em; color: rgba(255,255,255,0.25);
+      display: flex; align-items: center; gap: 6px;
+      pointer-events: none; transition: opacity 0.5s;
+    }
+    .key-box { border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SLIDE 1 — TITLE (dark)
+    ══════════════════════════════════════════════════════════════════ */
+    #s1 { background: var(--navy-deep); }
+
+    .s1-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 110% 50%, rgba(0,102,204,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at -10% 50%, rgba(0,42,107,0.8) 0%, transparent 60%),
+        linear-gradient(135deg, #001845 0%, #002A6B 45%, #003A8C 100%);
+    }
+    .s1-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .s1-diagonal {
+      position: absolute; right: 0; top: 0; bottom: 0; width: 42%;
+      background: linear-gradient(135deg, rgba(0,102,204,0.15) 0%, rgba(0,102,204,0.08) 100%);
+      clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+      border-left: 1px solid rgba(91,174,240,0.2);
+    }
+    .s1-corner-mark { position: absolute; top: 0; right: 0; width: 120px; height: 120px; overflow: hidden; }
+    .s1-corner-mark::before {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 0; height: 0; border-style: solid;
+      border-width: 0 120px 120px 0;
+      border-color: transparent var(--blue) transparent transparent;
+      opacity: 0.3;
+    }
+
+    .s1-content {
+      position: relative; z-index: 2; height: 100%;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 0 8% 90px 8%;
+    }
+    .s1-eyebrow {
+      font-family: var(--font-display); font-weight: 600; font-size: 13px;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: 28px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .s1-eyebrow::before { content: ''; display: block; width: 36px; height: 2px; background: var(--blue-light); }
+
+    .s1-title {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(36px, 5.5vw, 72px);
+      line-height: 1.0; letter-spacing: -0.03em;
+      text-transform: uppercase; color: var(--white);
+      max-width: 720px; margin-bottom: 32px;
+    }
+    .s1-title span { color: var(--blue-light); }
+
+    .s1-subtitle {
+      font-family: var(--font-body); font-weight: 300;
+      font-size: clamp(14px, 1.5vw, 19px);
+      color: rgba(255,255,255,0.65);
+      max-width: 560px; line-height: 1.65; margin-bottom: 48px;
+    }
+    .s1-divider { width: 60px; height: 3px; background: linear-gradient(90deg, var(--blue), var(--blue-light)); margin-bottom: 36px; }
+
+    .s1-meta { display: flex; flex-direction: column; gap: 12px; }
+    .s1-meta-row { display: flex; align-items: center; gap: 16px; }
+    .s1-meta-label {
+      font-family: var(--font-display); font-weight: 600; font-size: 11px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--blue-light); min-width: 100px;
+    }
+    .s1-meta-value { font-family: var(--font-body); font-weight: 400; font-size: 15px; color: rgba(255,255,255,0.75); }
+
+    .s1-badge {
+      position: absolute; bottom: 48px; right: 8%;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+    }
+    .s1-badge-label { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .s1-badge-name  { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: 0.05em; color: rgba(255,255,255,0.55); }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SLIDE 2 — THE PROBLEM (split: dark left / light right)
+    ══════════════════════════════════════════════════════════════════ */
+    #s2 { background: var(--white); color: var(--black); }
+
+    .s2-header {
+      position: absolute; top: 0; left: 0; right: 0; height: 7px;
+      background: linear-gradient(90deg, var(--navy) 0%, var(--blue) 60%, var(--blue-light) 100%);
+    }
+    .s2-left {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 40%;
+      background: linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 100%);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px 48px 90px 52px;
+    }
+    .s2-right {
+      position: absolute; left: 40%; top: 0; bottom: 0; right: 0;
+      background: var(--white);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px 52px 90px 60px;
+    }
+
+    .s2-stat-block { margin-top: 40px; display: flex; flex-direction: column; gap: 22px; }
+    .s2-stat { display: flex; flex-direction: column; gap: 5px; padding-left: 18px; border-left: 3px solid var(--blue-mid); }
+    .s2-stat-number { font-family: var(--font-display); font-weight: 800; font-size: 32px; line-height: 1; color: var(--white); letter-spacing: -0.01em; }
+    .s2-stat-label  { font-family: var(--font-body); font-weight: 400; font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.4; }
+
+    .s2-pain-list { display: flex; flex-direction: column; gap: 18px; list-style: none; margin-bottom: 24px; }
+    .s2-pain-item { display: flex; gap: 16px; align-items: flex-start; }
+    .s2-pain-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--blue-pale);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 19px;
+    }
+    .s2-pain-text h4 { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 3px; }
+    .s2-pain-text p  { font-family: var(--font-body); font-size: 12.5px; color: var(--gray-mid); line-height: 1.5; }
+
+    .s2-question-box { padding: 18px 20px; background: rgba(0,102,204,0.06); border: 1px solid rgba(0,102,204,0.22); border-radius: 8px; }
+    .s2-question-label { font-family: var(--font-display); font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+    .s2-question-text  { font-size: 14px; color: var(--gray-dark); line-height: 1.6; font-style: italic; }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SLIDE 3 — THE SOLUTION (light / off-white)
+    ══════════════════════════════════════════════════════════════════ */
+    #s3 { background: var(--off-white); color: var(--black); }
+
+    .s3-content {
+      position: relative; z-index: 1; height: 100%;
+      display: flex; flex-direction: column;
+      padding: 44px 5% 90px;
+    }
+    .s3-title-row { margin-bottom: 20px; }
+
+    /* ── Story Strip Infographic ────────────────────────────────────── */
+    .story-wrap { flex: 1; display: flex; flex-direction: column; gap: 0; }
+
+    .story-strip {
+      flex: 1; display: flex; align-items: stretch; gap: 0;
+    }
+
+    .story-card {
+      flex: 1; background: var(--white); border-radius: 14px;
+      border: 1px solid var(--gray-light);
+      box-shadow: 0 3px 18px rgba(0,42,107,0.09);
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 20px 22px; overflow: hidden;
+    }
+    .story-card-bar { width: 100%; height: 6px; flex-shrink: 0; margin-bottom: 18px; }
+    .story-card:nth-child(1) .story-card-bar { background: var(--navy); }
+    .story-card:nth-child(3) .story-card-bar { background: var(--blue); }
+    .story-card:nth-child(5) .story-card-bar { background: var(--blue-mid); }
+    .story-card:nth-child(7) .story-card-bar { background: var(--accent); }
+
+    .story-step {
+      font-family: var(--font-display); font-weight: 900; font-size: 10px;
+      letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .story-card:nth-child(1) .story-step { color: var(--navy); }
+    .story-card:nth-child(3) .story-step { color: var(--blue); }
+    .story-card:nth-child(5) .story-step { color: var(--blue-mid); }
+    .story-card:nth-child(7) .story-step { color: #9A6000; }
+
+    .story-icon { font-size: 44px; margin-bottom: 12px; line-height: 1; }
+
+    .story-title {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(13px, 1.5vw, 19px);
+      line-height: 1.15; text-transform: uppercase; letter-spacing: -0.01em;
+      color: var(--navy); margin-bottom: 10px;
+    }
+
+    .story-body {
+      font-family: var(--font-body); font-size: clamp(11px, 1.05vw, 13px);
+      color: var(--gray-dark); line-height: 1.7; flex: 1;
+    }
+
+    .story-tag {
+      margin-top: 14px; padding: 5px 13px; border-radius: 20px;
+      font-family: var(--font-display); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .story-card:nth-child(1) .story-tag { background: rgba(0,42,107,0.08); color: var(--navy); }
+    .story-card:nth-child(3) .story-tag { background: rgba(0,102,204,0.09); color: var(--blue); }
+    .story-card:nth-child(5) .story-tag { background: rgba(26,127,212,0.10); color: var(--blue-mid); }
+    .story-card:nth-child(7) .story-tag { background: rgba(232,160,0,0.12); color: #8A5A00; }
+
+    .story-connector {
+      width: 38px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 5px;
+    }
+    .story-connector-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--blue-light); opacity: 0.5;
+    }
+    .story-connector-arrow {
+      font-size: 20px; color: var(--blue-light); line-height: 1; font-weight: 700;
+    }
+
+    .story-loop-bar {
+      margin-top: 16px; display: flex; align-items: center; gap: 12px;
+      padding: 11px 22px; border-radius: 8px; background: var(--navy);
+    }
+    .story-loop-icon { font-size: 17px; opacity: 0.75; flex-shrink: 0; }
+    .story-loop-text {
+      font-family: var(--font-display); font-weight: 700; font-size: 13px;
+      color: var(--white); letter-spacing: 0.03em; flex: 1;
+    }
+    .story-loop-sub {
+      font-family: var(--font-body); font-size: 12px;
+      color: rgba(255,255,255,0.5); white-space: nowrap;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SLIDE 4 — DEMO (dark)
+    ══════════════════════════════════════════════════════════════════ */
+    #s4 { background: var(--navy-deep); }
+
+    .s4-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 85% 80%, rgba(0,102,204,0.25) 0%, transparent 55%),
+        linear-gradient(160deg, #001845 0%, #002A6B 100%);
+    }
+    .s4-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .s4-content {
+      position: relative; z-index: 1; height: 100%;
+      display: flex; flex-direction: column;
+      padding: 52px 6% 90px;
+    }
+    .s4-title-row { margin-bottom: 28px; }
+
+    .s4-demo-panels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; flex: 1; }
+
+    .s4-demo-panel {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(91,174,240,0.2);
+      border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .s4-demo-panel-header {
+      padding: 12px 18px; background: rgba(0,102,204,0.15);
+      border-bottom: 1px solid rgba(91,174,240,0.2);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .s4-demo-step-num {
+      font-family: var(--font-display); font-weight: 800; font-size: 20px;
+      line-height: 1; color: var(--blue-light); opacity: 0.6;
+    }
+    .s4-demo-step-title {
+      font-family: var(--font-display); font-weight: 700; font-size: 13px;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--white);
+    }
+    .s4-pill {
+      margin-left: auto; padding: 3px 10px; border-radius: 20px;
+      font-family: var(--font-display); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .pill-observe { background: rgba(0,42,107,0.45); color: var(--blue-light); }
+    .pill-reason  { background: rgba(0,102,204,0.30); color: var(--blue-light); }
+    .pill-act     { background: rgba(232,160,0,0.20); color: var(--accent); }
+
+    .s4-screenshot-frame {
+      flex: 1; margin: 14px; border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(91,174,240,0.2);
+      overflow: hidden; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .s4-screenshot-frame img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top;
+      display: block; border-radius: 7px;
+    }
+
+    .s4-demo-desc { padding: 0 16px 14px; font-family: var(--font-body); font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    .s4-demo-link-row { margin-top: 18px; display: flex; align-items: center; justify-content: center; gap: 14px; }
+    .s4-demo-link-label { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.38); }
+    .s4-demo-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: 6px;
+      background: var(--blue); color: var(--white);
+      font-family: var(--font-display); font-weight: 700; font-size: 13px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .s4-demo-btn:hover { background: var(--blue-mid); }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SLIDE 5 — START TODAY (light / white)
+    ══════════════════════════════════════════════════════════════════ */
+    #s5 { background: var(--white); color: var(--black); }
+
+    .s5-content {
+      position: relative; z-index: 1; height: 100%;
+      display: flex; flex-direction: column;
+      padding: 52px 6% 90px;
+    }
+    .s5-title-row { margin-bottom: 28px; }
+
+    .s5-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; flex: 1; }
+
+    .s5-faq-card {
+      border-radius: 12px; background: var(--off-white);
+      border: 1px solid var(--gray-light);
+      padding: 22px 24px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .s5-faq-q {
+      font-family: var(--font-display); font-weight: 700; font-size: 14.5px;
+      color: var(--navy); display: flex; align-items: flex-start; gap: 10px;
+    }
+    .s5-faq-q::before {
+      content: 'Q'; font-family: var(--font-display); font-weight: 800;
+      font-size: 10px; letter-spacing: 0.15em;
+      color: var(--blue); background: var(--blue-pale);
+      padding: 2px 7px; border-radius: 4px;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .s5-faq-a { font-family: var(--font-body); font-size: 13px; color: var(--gray-dark); line-height: 1.6; padding-left: 30px; }
+
+    .s5-cta-bar {
+      margin-top: 20px; display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px; background: var(--navy); border-radius: 10px; gap: 16px;
+    }
+    .s5-cta-text { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--white); letter-spacing: 0.02em; }
+    .s5-cta-links { display: flex; gap: 10px; align-items: center; }
+    .s5-cta-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 5px;
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .s5-cta-link:hover { opacity: 0.85; }
+    .s5-cta-link.primary   { background: var(--blue-light); color: var(--navy); }
+    .s5-cta-link.secondary { background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.3); }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SLIDE 6 — TECHNICAL ARCHITECTURE (light / white)
+    ══════════════════════════════════════════════════════════════════ */
+    #s6 { background: var(--white); color: var(--black); }
+
+    .s6-content {
+      position: relative; z-index: 1; height: 100%;
+      display: flex; flex-direction: column;
+      padding: 44px 6% 90px;
+    }
+    .s6-title-row {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; margin-bottom: 20px;
+    }
+    .s6-diagram-wrap {
+      flex: 1; background: var(--off-white);
+      border-radius: 10px; border: 1px solid var(--gray-light);
+      box-shadow: 0 4px 24px rgba(0,42,107,0.08);
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px; overflow: hidden;
+    }
+    .s6-diagram-wrap img {
+      max-width: 100%; max-height: 100%; object-fit: contain;
+    }
+    .s6-note {
+      margin-top: 14px; display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-body); font-size: 12px; color: var(--gray-mid);
+    }
+    .s6-note-icon { font-size: 14px; flex-shrink: 0; }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SLIDE 7 — Q&A + CONNECT (dark)
+    ══════════════════════════════════════════════════════════════════ */
+    #s7 { background: var(--navy-deep); }
+
+    .s7-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 110% 50%, rgba(0,102,204,0.30) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 70% at -10% 50%, rgba(0,42,107,0.7) 0%, transparent 60%),
+        linear-gradient(135deg, #001845 0%, #002A6B 50%, #003A8C 100%);
+    }
+    .s7-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    /* Giant ghosted watermark — sits between bg and content */
+    .s7-qna-watermark {
+      position: absolute; z-index: 1;
+      top: 50%; left: 4%;
+      transform: translateY(-54%);
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(160px, 22vw, 300px);
+      line-height: 1; letter-spacing: -0.05em;
+      color: rgba(255,255,255,0.055);
+      user-select: none; pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .s7-content {
+      position: relative; z-index: 2; height: 100%;
+      display: flex; align-items: center;
+      padding: 0 7% 90px 8%;
+      gap: 6%;
+    }
+
+    /* Left: heading + topics */
+    .s7-left {
+      flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;
+    }
+    .s7-eyebrow {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: 16px;
+    }
+    .s7-heading {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(36px, 5.2vw, 68px);
+      line-height: 1.0; text-transform: uppercase;
+      letter-spacing: -0.03em; color: var(--white);
+      margin-bottom: 24px;
+    }
+    .s7-heading span { color: var(--blue-light); }
+    .s7-subtext {
+      font-family: var(--font-body); font-weight: 300;
+      font-size: clamp(14px, 1.4vw, 17px);
+      color: rgba(255,255,255,0.65); line-height: 1.7;
+      max-width: 480px; margin-bottom: 36px;
+    }
+    .s7-divider {
+      width: 48px; height: 3px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light));
+      margin-bottom: 28px;
+    }
+    .s7-topics-label {
+      font-family: var(--font-display); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); margin-bottom: 16px;
+    }
+    .s7-topics {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .s7-topic {
+      display: flex; align-items: flex-start; gap: 14px;
+      font-family: var(--font-body); font-size: 15px;
+      color: rgba(255,255,255,0.78); line-height: 1.45;
+    }
+    .s7-topic-dot {
+      width: 7px; height: 7px; border-radius: 50%; margin-top: 5px;
+      background: var(--blue-light); flex-shrink: 0;
+    }
+
+    /* Right: QR card */
+    .s7-right {
+      flex: 0 0 270px; display: flex; flex-direction: column;
+      align-items: center; gap: 0;
+    }
+    .s7-qr-card {
+      background: var(--white); border-radius: 22px;
+      padding: 28px 28px 22px;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.45);
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      width: 100%;
+    }
+    .s7-qr-card img {
+      width: 210px; height: 210px;
+      border-radius: 10px; display: block;
+    }
+    .s7-qr-name {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 18px; color: var(--navy);
+      letter-spacing: 0.01em; text-align: center;
+    }
+    .s7-qr-role {
+      font-family: var(--font-body); font-size: 13px;
+      color: var(--gray-mid); text-align: center; line-height: 1.45;
+      margin-top: -6px;
+    }
+    .s7-qr-cta {
+      margin-top: 6px; padding: 11px 20px; border-radius: 8px;
+      background: #0A66C2; color: var(--white);
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+      text-align: center; width: 100%;
+    }
+    .s7-scan-hint {
+      margin-top: 16px;
+      font-family: var(--font-display); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); text-align: center;
+    }
+
+    /* ── Print / PDF export ────────────────────────────────────────── */
+    .print-logo { display: none; }
+
+    @media print {
+      @page { size: 297mm 167mm; margin: 0; }
+
+      *, *::before, *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      html, body { width: 297mm; height: 167mm; overflow: visible; background: transparent; margin: 0; padding: 0; }
+
+      #deck { width: 297mm; height: auto; display: block; transform: none !important; transition: none; background: transparent; }
+
+      .slide {
+        width: 297mm; height: 167mm; overflow: hidden;
+        page-break-after: always; break-after: page;
+        display: flex; box-sizing: border-box;
+      }
+
+      #nav, #key-hint { display: none !important; }
+
+.s1-content { padding: 0 8% 44px 8%; }
+      .s2-left  { padding: 60px 48px 44px 52px; }
+      .s2-right { padding: 60px 52px 44px 60px; }
+      .s3-content  { flex: 1; min-width: 0; padding: 36px 5% 36px; }
+      .story-wrap  { flex: 1; min-height: 0; }
+      .story-strip { flex: 1; min-height: 0; }
+      .story-loop-bar { margin-top: 12px; }
+      .s4-content { flex: 1; min-width: 0; padding: 44px 6% 44px; }
+      .s4-title-row { margin-bottom: 18px; }
+      .s4-demo-panels { flex: 1; min-height: 0; }
+      .s5-content { flex: 1; min-width: 0; padding: 44px 6% 44px; }
+      .s5-title-row { margin-bottom: 18px; }
+      .s5-faq-grid { flex: 1; min-height: 0; }
+      .s5-cta-bar { margin-top: 14px; }
+      .s6-content { flex: 1; min-width: 0; padding: 36px 6% 36px; }
+      .s6-title-row { margin-bottom: 14px; }
+      .s6-diagram-wrap { flex: 1; min-height: 0; }
+      .s6-note { margin-top: 10px; }
+      .s7-content { flex: 1; min-width: 0; padding: 0 7% 44px 8%; }
+      .s7-right { flex: 0 0 250px; }
+      .s7-qr-card img { width: 190px; height: 190px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="slide-counter">01 / 07</div>
+  <div id="key-hint"><span class="key-box">←</span><span class="key-box">→</span> NAVIGATE</div>
+
+  <div id="deck">
+
+    <!-- ══ SLIDE 1 — TITLE ══════════════════════════════════════════════════ -->
+    <div class="slide" id="s1">
+      <div class="s1-bg"></div>
+      <div class="s1-grid"></div>
+      <div class="s1-diagonal"></div>
+      <div class="s1-corner-mark"></div>
+
+      <div class="s1-content animate-in">
+        <div class="s1-eyebrow">AI+ Power 2026 &nbsp;·&nbsp; Builder's Demo</div>
+
+        <div class="s1-title">
+          <br/>
+          <span>Agentic FinOps</span><br/>
+          for multi-cloud
+        </div>
+
+        <div class="s1-subtitle">
+          A walkthrough of what I built — an agentic loop where AI spots cost issues, proposes a fix, and a human approves before anything touches infrastructure.
+        </div>
+
+        <div class="s1-divider"></div>
+
+        <div class="s1-meta">
+          <div class="s1-meta-row">
+            <span class="s1-meta-label">Presented by</span>
+            <span class="s1-meta-value">John NG — Partner Solution Architect</span>
+          </div>
+          <div class="s1-meta-row">
+            <span class="s1-meta-label">Event</span>
+            <span class="s1-meta-value">AI+ Power 2026</span>
+          </div>
+          <div class="s1-meta-row">
+            <span class="s1-meta-label">Date</span>
+            <span class="s1-meta-value">17 May 2026</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ SLIDE 2 — THE PROBLEM (split) ════════════════════════════════════ -->
+    <div class="slide" id="s2">
+      <div class="s2-header"></div>
+
+      <div class="s2-left">
+        <div class="animate-in">
+          <div class="dark-eyebrow">What got me thinking</div>
+          <div class="dark-heading">The thing that<br/>kept bugging me</div>
+
+          <div class="s2-stat-block">
+            <div class="s2-stat">
+              <div class="s2-stat-number">I see it</div>
+              <div class="s2-stat-label">A cost spike shows up in the dashboard —<br/>but the dashboard won't tell me what to do</div>
+            </div>
+            <div class="s2-stat">
+              <div class="s2-stat-number">I dig in</div>
+              <div class="s2-stat-label">Half an hour later I've figured out the cause —<br/>and it was a forgotten dev instance again</div>
+            </div>
+            <div class="s2-stat">
+              <div class="s2-stat-number">I fix it</div>
+              <div class="s2-stat-label">Two days after the spike. The waste already<br/>happened. I just cleaned up after it.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="s2-right">
+        <div class="animate-in">
+          <div class="light-eyebrow">Other builders told me the same</div>
+          <div class="light-heading" style="margin-bottom: 26px;">It's not just<br/>me, is it?</div>
+
+          <ul class="s2-pain-list">
+            <li class="s2-pain-item">
+              <div class="s2-pain-icon">📊</div>
+              <div class="s2-pain-text">
+                <h4>We're great at observing, bad at acting</h4>
+                <p>We've invested in dashboards, alerts, and cost reports. But they all end with a human having to figure out the next step.</p>
+              </div>
+            </li>
+            <li class="s2-pain-item">
+              <div class="s2-pain-icon">🔁</div>
+              <div class="s2-pain-text">
+                <h4>It's always the same class of problem</h4>
+                <p>Forgotten dev instances. Oversized reservations. Idle resources. The diagnosis is repetitive — so why are we still doing it manually?</p>
+              </div>
+            </li>
+            <li class="s2-pain-item">
+              <div class="s2-pain-icon">🤔</div>
+              <div class="s2-pain-text">
+                <h4>Agentic AI feels like the right fit here</h4>
+                <p>Observe a signal, reason through options, take a bounded action. That's exactly what an agent is good at — so I tried building it.</p>
+              </div>
+            </li>
+          </ul>
+
+          <div class="s2-question-box">
+            <div class="s2-question-label">That got me thinking...</div>
+            <div class="s2-question-text">
+              "What if I connected an AI agent directly to my cost data and gave it the ability to act — with guardrails?"
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 3 — THE SOLUTION (light) ═══════════════════════════════════ -->
+    <div class="slide" id="s3">
+      <div class="topbar"></div>
+
+      <div class="s3-content">
+        <div class="s3-title-row animate-in">
+          <div class="light-eyebrow">What I Built</div>
+          <div class="light-heading">The System I Put Together</div>
+        </div>
+
+        <div class="story-wrap animate-in">
+          <div class="story-strip">
+
+            <!-- Step 1 -->
+            <div class="story-card">
+              <div class="story-card-bar"></div>
+              <div class="story-step">Step 01</div>
+              <div class="story-icon">☁️</div>
+              <div class="story-title">Your bills<br/>flow in</div>
+              <div class="story-body">Your cloud spending data from AWS and Alibaba syncs into OptScale automatically every day — no exports, no manual work.</div>
+              <div class="story-tag">Data Collection</div>
+            </div>
+
+            <div class="story-connector">
+              <div class="story-connector-dot"></div>
+              <div class="story-connector-arrow">›</div>
+              <div class="story-connector-dot"></div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="story-card">
+              <div class="story-card-bar"></div>
+              <div class="story-step">Step 02</div>
+              <div class="story-icon">🔍</div>
+              <div class="story-title">A spike<br/>is spotted</div>
+              <div class="story-body">OptScale watches your spending 24/7. The moment something looks unusual — a sudden spike, an idle resource — it raises a flag instantly.</div>
+              <div class="story-tag">Anomaly Detection</div>
+            </div>
+
+            <div class="story-connector">
+              <div class="story-connector-dot"></div>
+              <div class="story-connector-arrow">›</div>
+              <div class="story-connector-dot"></div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="story-card">
+              <div class="story-card-bar"></div>
+              <div class="story-step">Step 03</div>
+              <div class="story-icon">🤖</div>
+              <div class="story-title">AI figures<br/>out the fix</div>
+              <div class="story-body">The AI chat agent reads the alert, understands the context, and proposes a remediation — with its reasoning shown so you can see exactly why it's suggesting that action.</div>
+              <div class="story-tag">AI Reasoning</div>
+            </div>
+
+            <div class="story-connector">
+              <div class="story-connector-dot"></div>
+              <div class="story-connector-arrow">›</div>
+              <div class="story-connector-dot"></div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="story-card">
+              <div class="story-card-bar"></div>
+              <div class="story-step">Step 04</div>
+              <div class="story-icon">✅</div>
+              <div class="story-title">The fix<br/>happens</div>
+              <div class="story-body">You review the agent's proposal and approve it. The action then executes on AWS. OptScale confirms the cost normalises. You stayed in control the whole time.</div>
+              <div class="story-tag">Human-in-the-Loop</div>
+            </div>
+
+          </div><!-- /story-strip -->
+
+          <div class="story-loop-bar">
+            <div class="story-loop-icon">↺</div>
+            <div class="story-loop-text">The agent handles the detection and reasoning — you stay in the loop for every action that touches infrastructure.</div>
+            <div class="story-loop-sub">Built with OptScale (open source) + AWS Quick Suite Chat Agent</div>
+          </div>
+        </div><!-- /story-wrap -->
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 4 — DEMO (dark) ════════════════════════════════════════════ -->
+    <div class="slide" id="s4">
+      <div class="s4-bg"></div>
+      <div class="s4-grid"></div>
+      <div class="topbar"></div>
+
+      <div class="s4-content">
+        <div class="s4-title-row animate-in">
+          <div class="dark-eyebrow">Walk-through</div>
+          <div class="dark-heading">Let Me Show You the Thing</div>
+        </div>
+
+        <div class="s4-demo-panels animate-in">
+          <!-- Step 1 -->
+          <div class="s4-demo-panel">
+            <div class="s4-demo-panel-header">
+              <div class="s4-demo-step-num">01</div>
+              <div class="s4-demo-step-title">The Spike Shows Up</div>
+              <div class="s4-pill pill-observe">Observe</div>
+            </div>
+            <div class="s4-screenshot-frame">
+              <img src="screenshots/optscale-dashboard.png" alt="OptScale dashboard showing organisation expenses and cost recommendations" />
+            </div>
+            <div class="s4-demo-desc">
+              OptScale catches it first — expenses charted, 21 cost recommendations already queued. Before I even open my laptop, it knows something's off.
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="s4-demo-panel">
+            <div class="s4-demo-panel-header">
+              <div class="s4-demo-step-num">02</div>
+              <div class="s4-demo-step-title">The Agent Works It Out</div>
+              <div class="s4-pill pill-reason">Reason</div>
+            </div>
+            <div class="s4-screenshot-frame">
+              <img src="screenshots/aws-quick-chat-agent.png" alt="AWS Quick Suite Multi-Cloud FinOps Advisor chat interface" />
+            </div>
+            <div class="s4-demo-desc">
+              The Multi-Cloud FinOps Advisor — I ask it to analyse spend and surface underutilised resources. It pulls from OptScale and explains its reasoning before anything happens.
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="s4-demo-panel">
+            <div class="s4-demo-panel-header">
+              <div class="s4-demo-step-num">03</div>
+              <div class="s4-demo-step-title">It Just… Fixes It</div>
+              <div class="s4-pill pill-act">Act</div>
+            </div>
+            <div class="s4-screenshot-frame">
+              <img src="screenshots/recommended-actions.png" alt="Multi-Cloud FinOps recommended actions table with before and after costs" />
+            </div>
+            <div class="s4-demo-desc">
+              The agent surfaces a prioritised action table — rightsizing, auto-stop, decommission — with before/after costs. You review, you approve. Then it executes.
+            </div>
+          </div>
+        </div>
+
+        <div class="s4-demo-link-row animate-in">
+          <span class="s4-demo-link-label">Follow along →</span>
+          <a href="https://your-demo-link-here.example.com" target="_blank" class="s4-demo-btn">
+            🔗 &nbsp; Open the Demo
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 5 — START TODAY (light) ════════════════════════════════════ -->
+    <div class="slide" id="s5">
+      <div class="topbar"></div>
+
+      <div class="s5-content">
+        <div class="s5-title-row animate-in">
+          <div>
+            <div class="light-eyebrow">Honest Takeaways</div>
+            <div class="light-heading">What I Actually Learned</div>
+          </div>
+        </div>
+
+        <div class="s5-faq-grid animate-in">
+          <div class="s5-faq-card">
+            <div class="s5-faq-q">The hardest part was the plumbing, not the AI</div>
+            <div class="s5-faq-a">Getting clean, structured cost signals out of OptScale and into the agent took more work than writing the agent itself. The AI part was surprisingly straightforward once the data was right.</div>
+          </div>
+          <div class="s5-faq-card">
+            <div class="s5-faq-q">Human-in-the-loop isn't a limitation — it's the design</div>
+            <div class="s5-faq-a">The agent suggests, you approve, AWS executes. Keeping that approval step isn't a workaround — it's what makes this safe to run on real infrastructure. The value is in the detection and reasoning, not in removing humans.</div>
+          </div>
+          <div class="s5-faq-card">
+            <div class="s5-faq-q">Open source made this experiment possible</div>
+            <div class="s5-faq-a">OptScale is Apache 2.0 — I spun it up in 15 minutes with docker-compose, no procurement, no negotiation. That low barrier is what let me prototype fast and actually learn something real.</div>
+          </div>
+          <div class="s5-faq-card">
+            <div class="s5-faq-q">The "detect → explain → approve → fix" loop feels right</div>
+            <div class="s5-faq-a">The first time I watched a real spike get caught, explained clearly, and resolved with one approval click — it felt like the right balance. Fast enough to matter, controlled enough to trust.</div>
+          </div>
+        </div>
+
+        <div class="s5-cta-bar animate-in">
+          <div class="s5-cta-text">Want to build this yourself? Everything is open.</div>
+          <div class="s5-cta-links">
+            <a href="https://github.com/hystax/optscale" target="_blank" class="s5-cta-link primary">&#9733; OptScale on GitHub</a>
+            <a href="https://your-demo-link-here.example.com" target="_blank" class="s5-cta-link secondary">&#128279; Live Demo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 6 — TECHNICAL ARCHITECTURE ════════════════════════════════ -->
+    <div class="slide" id="s6">
+      <div class="topbar"></div>
+
+      <div class="s6-content">
+        <div class="s6-title-row animate-in">
+          <div>
+            <div class="light-eyebrow">Technical Reference</div>
+            <div class="light-heading">Solution Architecture</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--navy);color:var(--white);">AWS Cloud</span>
+            <span style="font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:rgba(255,107,0,0.1);color:#CC5500;">Alibaba Cloud</span>
+            <span style="font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--blue-pale);color:var(--navy);">Open Source</span>
+          </div>
+        </div>
+
+        <div class="s6-diagram-wrap animate-in">
+          <img src="solution-architecture/OptScale-QuickSuite-Page-1.drawio.png" alt="Solution Architecture Diagram" />
+        </div>
+
+        <div class="s6-note animate-in">
+          <span class="s6-note-icon">ℹ️</span>
+          <span>User → OptScale (FinOps Account) detects anomalies → Quick Suite Chat Agent reasons via AgentCore Gateway + MCP → actions loop back to OptScale. Billing data read-only from AWS CUR S3 and Alibaba Cloud RAM user.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 7 — Q&A + CONNECT ══════════════════════════════════════════ -->
+    <div class="slide" id="s7">
+      <div class="s7-bg"></div>
+      <div class="s7-grid"></div>
+      <!-- Giant background watermark -->
+      <div class="s7-qna-watermark">Q&amp;A</div>
+
+      <div class="s7-content">
+
+        <!-- Left: Q&A + CTA text -->
+        <div class="s7-left animate-in">
+          <div class="s7-eyebrow">Open floor</div>
+          <div class="s7-heading">
+            Questions?<br/>
+            Let's <span>dig in.</span>
+          </div>
+          <div class="s7-subtext">
+            Happy to go deeper on any part of the build — the architecture, the tooling choices, what broke, or what I'd do differently next time.
+          </div>
+          <div class="s7-divider"></div>
+          <div class="s7-topics-label">Things we can dig into</div>
+          <div class="s7-topics">
+            <div class="s7-topic"><div class="s7-topic-dot"></div>How OptScale ingests multi-cloud billing data</div>
+            <div class="s7-topic"><div class="s7-topic-dot"></div>How the Chat Agent connects to OptScale's API</div>
+            <div class="s7-topic"><div class="s7-topic-dot"></div>Guardrails and human-in-the-loop design decisions</div>
+            <div class="s7-topic"><div class="s7-topic-dot"></div>Adopting this pattern inside your organisation</div>
+          </div>
+        </div>
+
+        <!-- Right: LinkedIn QR card -->
+        <div class="s7-right animate-in">
+          <div class="s7-qr-card">
+            <img src="linkedin/linkedin-qr-code.jpeg" alt="LinkedIn QR code — John NG" />
+            <div class="s7-qr-name">John NG</div>
+            <div class="s7-qr-role">Partner Solution Architect<br/>Exploring agentic FinOps</div>
+            <div class="s7-qr-cta">Connect on LinkedIn</div>
+          </div>
+          <div class="s7-scan-hint">&#8593; Scan to connect</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /deck -->
+
+  <nav id="nav">
+    <button class="nav-btn" id="btn-prev" disabled aria-label="Previous slide">&#8592;</button>
+    <div id="dots"></div>
+    <button class="nav-btn" id="btn-next" aria-label="Next slide">&#8594;</button>
+  </nav>
+
+  <script>
+    const TOTAL = 7;
+    let current = 0;
+    let animating = false;
+
+    const deck    = document.getElementById('deck');
+    const counter = document.getElementById('slide-counter');
+    const dotsEl  = document.getElementById('dots');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const hint    = document.getElementById('key-hint');
+
+    for (let i = 0; i < TOTAL; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    }
+
+    function goTo(n) {
+      if (animating || n === current || n < 0 || n >= TOTAL) return;
+      animating = true;
+
+      const next = document.querySelectorAll('.slide')[n];
+      next.querySelectorAll('.animate-in').forEach(el => {
+        el.classList.remove('animate-in');
+        void el.offsetWidth;
+        el.classList.add('animate-in');
+      });
+
+      current = n;
+      deck.style.transform = `translateX(-${current * 100}vw)`;
+      counter.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(TOTAL).padStart(2, '0');
+
+      document.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+
+      btnPrev.disabled = current === 0;
+      btnNext.disabled = current === TOTAL - 1;
+      setTimeout(() => { animating = false; }, 700);
+    }
+
+    btnPrev.addEventListener('click', () => goTo(current - 1));
+    btnNext.addEventListener('click', () => goTo(current + 1));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); goTo(current - 1); }
+    });
+
+    const hideHint = () => { hint.style.opacity = '0'; };
+    document.addEventListener('keydown', hideHint, { once: true });
+    document.getElementById('nav').addEventListener('click', hideHint, { once: true });
+
+    let touchX = null;
+    document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) { dx < 0 ? goTo(current + 1) : goTo(current - 1); }
+      touchX = null;
+    }, { passive: true });
+  </script>
+</body>
+</html>

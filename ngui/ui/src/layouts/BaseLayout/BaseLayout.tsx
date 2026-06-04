@@ -20,6 +20,7 @@ import Logo from "components/Logo";
 import MainMenu from "components/MainMenu";
 import PageContentWrapper from "components/PageContentWrapper";
 import PendingInvitationsAlert from "components/PendingInvitationsAlert";
+import QuickSuiteChatWidget from "components/QuickSuiteChatWidget/QuickSuiteChatWidget";
 import SubscriptionStatusTopAlert from "components/SubscriptionStatusTopAlert";
 import TopAlertWrapper from "components/TopAlertWrapper";
 import CoreDataContainer from "containers/CoreDataContainer";
@@ -187,6 +188,7 @@ const BaseLayout = ({ children, showMainMenu = false, showOrganizationSelector =
               <Box>
                 <DocsPanel />
               </Box>
+              <QuickSuiteChatWidget />
             </Box>
           </>
         );

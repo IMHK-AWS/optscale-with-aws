@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://unpkg.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src https://fonts.gstatic.com;
+      frame-src https://*.quicksight.aws.amazon.com https://*.s3.amazonaws.com https://*.s3.us-east-1.amazonaws.com;
+      connect-src 'self' blob:
+        https://d101591d1kwpyj.cloudfront.net
+        https://*.quicksight.aws.amazon.com
+        https://*.quicksight.aws.a2z.com
+        wss://us-east-1.quicksight.aws.amazon.com
+        https://unpkg.com
+        https://*.resources.maps.a2z.com
+        https://maps.geo.us-east-1.amazonaws.com
+        https://sourcemaps.prod.us-east-1.quicksight.aws.a2z.com
+        https://d233vg7hq6pih1.cloudfront.net
+        https://d2an3pauscn6pz.cloudfront.net
+        https://d3bzuuerb3m5u0.cloudfront.net
+        https://d2jqqf54ibg5b0.cloudfront.net
+        https://dz7h3hsxqwt4t.cloudfront.net
+        https://d32lr7enz4vwys.cloudfront.net
+        https://d758cqe2bs24d.cloudfront.net
+        https://*.execute-api.us-east-1.amazonaws.com
+        https://*.s3.amazonaws.com
+        https://*.s3.us-east-1.amazonaws.com
+        https://*.kinesisvideo.us-east-1.amazonaws.com
+        https://signin.aws.amazon.com
+        https://graph.microsoft.com
+        https://logo.clearbit.com;
+      img-src 'self' data: blob: https://*.quicksight.aws.amazon.com https://logo.clearbit.com;
+      worker-src blob:;
+    ">
+    <title>QuickSuite Chat Widget — Standalone Test</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/amazon-quicksight-embedding-sdk@2.11.2/dist/quicksight-embedding-js-sdk.min.js"></script>
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Ubuntu', -apple-system, sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: #1a2e45;
+        }
+
+        .notice {
+            background: #fff;
+            border: 1px solid #d0dbe8;
+            border-radius: 12px;
+            padding: 2rem 2.5rem;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,.07);
+        }
+
+        .notice h1 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .notice p { font-size: 0.875rem; color: #5a7a9a; line-height: 1.6; }
+        .arrow {
+            font-size: 2rem;
+            color: #0066cc;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(8px); }
+        }
+
+        /* ===== FLOATING WIDGET ===== */
+        #qs-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1250;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1565c0;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(21,101,192,.45);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #qs-fab:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 24px rgba(21,101,192,.55);
+        }
+
+        #qs-panel {
+            position: fixed;
+            bottom: 96px;
+            right: 24px;
+            width: 400px;
+            height: 560px;
+            max-height: 80vh;
+            z-index: 1249;
+            display: flex;
+            flex-direction: column;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,.18);
+            background: #fff;
+            transform-origin: bottom right;
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        #qs-panel.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #qs-panel-header {
+            background: #1565c0;
+            color: #fff;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .header-icon {
+            width: 32px; height: 32px;
+            background: rgba(255,255,255,.2);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-icon svg { width: 16px; height: 16px; stroke: white; fill: none; }
+
+        .header-text { flex: 1; }
+        .header-title { font-size: 0.9rem; font-weight: 700; }
+        .header-sub   { font-size: 0.72rem; opacity: 0.8; margin-top: 1px; }
+
+        #qs-close {
+            background: none; border: none; color: white; cursor: pointer;
+            padding: 4px; border-radius: 6px; display: flex;
+            transition: background 0.15s;
+        }
+        #qs-close:hover { background: rgba(255,255,255,.2); }
+        #qs-close svg { width: 16px; height: 16px; }
+
+        #qs-panel-body {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .state-loading, .state-error {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 12px;
+        }
+
+        .spinner {
+            width: 32px; height: 32px;
+            border: 3px solid rgba(21,101,192,.2);
+            border-top-color: #1565c0;
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text { font-size: 0.875rem; color: #5a7a9a; }
+
+        .state-error { padding: 1.5rem; text-align: center; color: #c53030; font-size: 0.875rem; }
+
+        @media (max-width: 480px) {
+            #qs-panel {
+                width: 100vw; height: 100dvh;
+                bottom: 0; right: 0; border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="notice">
+    <h1>QuickSuite Chat Widget — Test Page</h1>
+    <p>Click the blue chat button in the bottom-right corner to open the AI Assistant panel. This page verifies the widget interaction and QuickSight embed work correctly without a running OptScale backend.</p>
+</div>
+<div class="arrow">↘</div>
+
+<!-- ===== FLOATING WIDGET ===== -->
+<button id="qs-fab" aria-label="Open AI Assistant" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+</button>
+
+<div id="qs-panel" aria-hidden="true">
+    <div id="qs-panel-header">
+        <div class="header-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+        </div>
+        <div class="header-text">
+            <div class="header-title">Solutions Assistant</div>
+            <div class="header-sub">Ask anything about our vendor portfolio</div>
+        </div>
+        <button id="qs-close" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    </div>
+    <div id="qs-panel-body"></div>
+</div>
+
+<script>
+const EMBED_CONFIG_URL = 'https://d101591d1kwpyj.cloudfront.net/api/get-embed-config';
+const PARTNER_ID = 'finops';
+
+const fab   = document.getElementById('qs-fab');
+const panel = document.getElementById('qs-panel');
+const body  = document.getElementById('qs-panel-body');
+
+let open        = false;
+let initialised = false;
+
+function setOpen(value) {
+    open = value;
+    panel.classList.toggle('open', value);
+    fab.setAttribute('aria-expanded', value);
+    panel.setAttribute('aria-hidden', !value);
+    fab.innerHTML = value
+        ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
+               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+           </svg>`
+        : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+           </svg>`;
+}
+
+fab.addEventListener('click', () => {
+    if (open) {
+        setOpen(false);
+        return;
+    }
+    setOpen(true);
+    if (!initialised) {
+        initialised = true;
+        // 50ms: let the CSS transition start so the container has real dimensions
+        setTimeout(initEmbed, 50);
+    }
+});
+
+document.getElementById('qs-close').addEventListener('click', () => setOpen(false));
+
+async function initEmbed() {
+    body.innerHTML = '<div class="state-loading"><div class="spinner"></div><span class="loading-text">Loading AI Assistant\u2026</span></div>';
+    try {
+        const res = await fetch(`${EMBED_CONFIG_URL}?partnerId=${encodeURIComponent(PARTNER_ID)}`);
+        if (!res.ok) throw new Error(await res.text());
+        const { embedUrl, contentOptions } = await res.json();
+        body.innerHTML = '';
+
+        const { createEmbeddingContext } = QuickSightEmbedding;
+        const ctx = await createEmbeddingContext();
+        await ctx.embedQuickChat(
+            { url: embedUrl, container: '#qs-panel-body', height: '100%', width: '100%' },
+            contentOptions
+        );
+    } catch (err) {
+        body.innerHTML = `<div class="state-error">Failed to load assistant.<br>${err.message}</div>`;
+    }
+}
+</script>
+</body>
+</html>

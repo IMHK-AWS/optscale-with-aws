@@ -30,9 +30,5 @@ jira_ui/*/build/
 # Vagrant
 optscale-deploy/.vagrant/
 
-# demo
-demo-presentation/
 
 creds/
-
-CLAUDE.md

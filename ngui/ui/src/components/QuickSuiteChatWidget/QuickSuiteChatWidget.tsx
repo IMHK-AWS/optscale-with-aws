@@ -104,10 +104,10 @@ const QuickSuiteChatWidget = () => {
           <ChatBubbleIcon fontSize="small" />
           <Box flex={1}>
             <Typography variant="subtitle2" fontWeight={700}>
-              Solutions Assistant
+              FinOps Assistant
             </Typography>
             <Typography variant="caption" sx={{ opacity: 0.8 }}>
-              Ask anything about our vendor portfolio
+              Ask anything about your cloud costs
             </Typography>
           </Box>
           <IconButton size="small" onClick={() => setOpen(false)} sx={{ color: "white" }}>
